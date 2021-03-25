@@ -13,37 +13,12 @@ def main():
 
 
 def adjacent_test(puzzle):
-    print("puzzle: ", puzzle.get_puzzle())
-    print("top: ", puzzle.get_adjacent_top(1, 1))
-    print("left: ", puzzle.get_adjacent_left(1, 1))
-    print("right: ", puzzle.get_adjacent_right(1, 1))
-    print("bottom: ", puzzle.get_adjacent_bottom(1, 1))
-
-    print("================")
-    print("top: ", puzzle.get_adjacent_top(0, 0))
-    print("left: ", puzzle.get_adjacent_left(0, 0))
-    print("right: ", puzzle.get_adjacent_right(0, 0))
-    print("bottom: ", puzzle.get_adjacent_bottom(0, 0))
-    print("================")
-    print("top: ", puzzle.get_adjacent_top(0, 1))
-    print("left: ", puzzle.get_adjacent_left(0, 1))
-    print("right: ", puzzle.get_adjacent_right(0, 1))
-    print("bottom: ", puzzle.get_adjacent_bottom(0, 1))
-    print("================")
-    print("top: ", puzzle.get_adjacent_top(0, 2))
-    print("left: ", puzzle.get_adjacent_left(0, 2))
-    print("right: ", puzzle.get_adjacent_right(0, 2))
-    print("bottom: ", puzzle.get_adjacent_bottom(0, 2))
-    print("================")
-    print("top: ", puzzle.get_adjacent_top(2, 2))
-    print("left: ", puzzle.get_adjacent_left(2, 2))
-    print("right: ", puzzle.get_adjacent_right(2, 2))
-    print("bottom: ", puzzle.get_adjacent_bottom(2, 2))
-    print("================")
-    print("top: ", puzzle.get_adjacent_top(3, 5))
-    print("left: ", puzzle.get_adjacent_left(3, 5))
-    print("right: ", puzzle.get_adjacent_right(3, 5))
-    print("bottom: ", puzzle.get_adjacent_bottom(3, 5))
+    print(f"puzzle: \n{puzzle.get_puzzle()}")
+    print(f"element: {puzzle.get_puzzle()[1][1]}")
+    print(f"top: {puzzle.get_top(1, 1)} at {puzzle.get_top_index(1, 1)}")
+    print(f"left: {puzzle.get_left(1, 1)} at {puzzle.get_left_index(1, 1)}")
+    print(f"right: {puzzle.get_right(1, 1)} at {puzzle.get_right_index(1, 1)}")
+    print(f"bottom: {puzzle.get_bottom(1, 1)} at {puzzle.get_bottom_index(1, 1)}")
 
 
 if __name__ == "__main__":
