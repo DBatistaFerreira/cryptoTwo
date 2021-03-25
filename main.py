@@ -1,4 +1,5 @@
 import puzzle as p
+import numpy as np
 
 
 def main():
@@ -9,16 +10,30 @@ def main():
     print("s_puzzle: ", s_puzzle)
 
     puzzle = p.Puzzle(s_puzzle)
-    adjacent_test(puzzle)
+    test(puzzle)
 
 
-def adjacent_test(puzzle):
+def test(puzzle):
+    print("=================")
+    value = 1
+    row = puzzle.get_value_row(value)
+    col = puzzle.get_value_col(value)
     print(f"puzzle: \n{puzzle.get_puzzle()}")
-    print(f"value: {puzzle.get_value_at(1, 1)} at {puzzle.get_value_index(8)}")
-    print(f"top: {puzzle.get_top(1, 1)} at {puzzle.get_top_index(1, 1)}")
-    print(f"left: {puzzle.get_left(1, 1)} at {puzzle.get_left_index(1, 1)}")
-    print(f"right: {puzzle.get_right(1, 1)} at {puzzle.get_right_index(1, 1)}")
-    print(f"bottom: {puzzle.get_bottom(1, 1)} at {puzzle.get_bottom_index(1, 1)}")
+    print(f"value: {value} at {puzzle.get_value_index(value)}")
+    print(f"top: {puzzle.get_top(value)} at {puzzle.get_top_index(value)}")
+    print(f"left: {puzzle.get_left(value)} at {puzzle.get_left_index(value)}")
+    print(f"right: {puzzle.get_right(value)} at {puzzle.get_right_index(value)}")
+    print(f"bottom: {puzzle.get_bottom(value)} at {puzzle.get_bottom_index(value)}")
+    print(f"get value at {row, col} : {puzzle.get_value_at(row, col)}")
+
+    print("=============")
+    value1 = 2
+    value2 = 1
+    print(f"puzzle: \n{puzzle.get_puzzle()}")
+    print(f"adjacent to {value1}: {puzzle.get_adjacent(value1)}")
+    print(f"{value1} is adjacent to {value2}: {puzzle.is_adjacent(value1, value2)}")
+
+
 
 
 if __name__ == "__main__":
