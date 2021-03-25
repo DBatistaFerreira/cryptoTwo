@@ -14,7 +14,7 @@ def main():
 
 def adjacent_test(puzzle):
     print(f"puzzle: \n{puzzle.get_puzzle()}")
-    print(f"element: {puzzle.get_puzzle()[1][1]}")
+    print(f"value: {puzzle.get_value_at(1, 1)} at {puzzle.get_value_index(8)}")
     print(f"top: {puzzle.get_top(1, 1)} at {puzzle.get_top_index(1, 1)}")
     print(f"left: {puzzle.get_left(1, 1)} at {puzzle.get_left_index(1, 1)}")
     print(f"right: {puzzle.get_right(1, 1)} at {puzzle.get_right_index(1, 1)}")

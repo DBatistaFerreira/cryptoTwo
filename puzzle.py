@@ -128,4 +128,10 @@ class Puzzle:
         except IndexError:
             return None
 
+    def get_value_at(self, row, col):
+        if row >= len(self.s_puzzle) or row < 0 or col >= len(self.s_puzzle[0]) or col < 0:
+            raise IndexError(f"row or col index out of range {self.s_puzzle.shape}")
+        return self.s_puzzle[row][col]
 
+    def get_value_index(self, value):
+        return np.where(self.s_puzzle == value)[0][0], np.where(self.s_puzzle == value)[1][0]
