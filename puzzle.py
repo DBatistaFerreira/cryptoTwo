@@ -56,7 +56,7 @@ def convert_puzzle_input(str_puzzle):
 
 class Puzzle:
     def __init__(self, puzzle=None):
-        self.s_puzzle = puzzle
+        self.s_puzzle = np.array(puzzle)
 
     def set_puzzle(self, puzzle):
         self.s_puzzle = puzzle
@@ -64,26 +64,68 @@ class Puzzle:
     def get_puzzle(self):
         return self.s_puzzle
 
-    def get_adjacent_left(self, row, col):
+    def get_left(self, row, col):
+        if row >= len(self.s_puzzle) or row < 0 or col >= len(self.s_puzzle[0]) or col < 0:
+            raise IndexError(f"row or col index out of range {self.s_puzzle.shape}")
         try:
             return self.s_puzzle[row][col - 1] if col - 1 >= 0 else None
         except IndexError:
             return None
 
-    def get_adjacent_right(self, row, col):
+    def get_right(self, row, col):
+        if row >= len(self.s_puzzle) or row < 0 or col >= len(self.s_puzzle[0]) or col < 0:
+            raise IndexError(f"row or col index out of range {self.s_puzzle.shape}")
         try:
             return self.s_puzzle[row][col + 1] if col + 1 < len(self.s_puzzle[row]) else None
         except IndexError:
             return None
 
-    def get_adjacent_top(self, row, col):
+    def get_top(self, row, col):
+        if row >= len(self.s_puzzle) or row < 0 or col >= len(self.s_puzzle[0]) or col < 0:
+            raise IndexError(f"row or col index out of range {self.s_puzzle.shape}")
         try:
             return self.s_puzzle[row - 1][col] if row - 1 >= 0 else None
         except IndexError:
             return None
 
-    def get_adjacent_bottom(self, row, col):
+    def get_bottom(self, row, col):
+        if row >= len(self.s_puzzle) or row < 0 or col >= len(self.s_puzzle[0]) or col < 0:
+            raise IndexError(f"row or col index out of range {self.s_puzzle.shape}")
         try:
             return self.s_puzzle[row + 1][col] if row + 1 < len(self.s_puzzle) else None
         except IndexError:
             return None
+
+    def get_left_index(self, row, col):
+        if row >= len(self.s_puzzle) or row < 0 or col >= len(self.s_puzzle[0]) or col < 0:
+            raise IndexError(f"row or col index out of range {self.s_puzzle.shape}")
+        try:
+            return (row, col - 1) if col - 1 < len(self.s_puzzle[row]) else None
+        except IndexError:
+            return None
+
+    def get_right_index(self, row, col):
+        if row >= len(self.s_puzzle) or row < 0 or col >= len(self.s_puzzle[0]) or col < 0:
+            raise IndexError(f"row or col index out of range {self.s_puzzle.shape}")
+        try:
+            return (row, col + 1) if col + 1 < len(self.s_puzzle[row]) else None
+        except IndexError:
+            return None
+
+    def get_top_index(self, row, col):
+        if row >= len(self.s_puzzle) or row < 0 or col >= len(self.s_puzzle[0]) or col < 0:
+            raise IndexError(f"row or col index out of range {self.s_puzzle.shape}")
+        try:
+            return (row - 1, col) if row - 1 < len(self.s_puzzle[row]) else None
+        except IndexError:
+            return None
+
+    def get_bottom_index(self, row, col):
+        if row >= len(self.s_puzzle) or row < 0 or col >= len(self.s_puzzle[0]) or col < 0:
+            raise IndexError(f"row or col index out of range {self.s_puzzle.shape}")
+        try:
+            return (row + 1, col) if row + 1 < len(self.s_puzzle[row]) else None
+        except IndexError:
+            return None
+
+
