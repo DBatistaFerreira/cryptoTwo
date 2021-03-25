@@ -27,13 +27,16 @@ def test(puzzle):
     print(f"get value at {row, col} : {puzzle.get_value_at(row, col)}")
 
     print("=============")
-    value1 = 2
+    value1 = 5
     value2 = 1
     print(f"puzzle: \n{puzzle.get_puzzle()}")
     print(f"adjacent to {value1}: {puzzle.get_adjacent(value1)}")
     print(f"{value1} is adjacent to {value2}: {puzzle.is_adjacent(value1, value2)}")
 
-
+    print("==========")
+    print(f"swap {value1} and {value2}")
+    print(f"{puzzle.swap(value1, value2)}")
+    print(f"{puzzle.get_puzzle()}")
 
 
 if __name__ == "__main__":

@@ -202,8 +202,10 @@ class Puzzle:
 
     def swap(self, value1, value2):
         if self.is_adjacent(value1, value2):
-            self.s_puzzle[self.get_value_row(value2)][self.get_value_col(value2)] = value1
-            self.s_puzzle[self.get_value_row(value1)][self.get_value_col(value1)] = value2
+            row1, col1 = self.get_value_index(value1)
+            row2, col2 = self.get_value_index(value2)
+            self.s_puzzle[row2][col2] = value1
+            self.s_puzzle[row1][col1] = value2
             return True
 
         return False
