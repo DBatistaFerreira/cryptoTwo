@@ -195,6 +195,12 @@ class Puzzle:
     def is_valid_index(self, row, col):
         return row < self.len_row() or row >= 0 or col < self.len_col() or col >= 0
 
+    def max_row_index(self):
+        return self.len_row() - 1
+
+    def max_col_index(self):
+        return self.len_col() - 1
+
     def get_adjacent(self, value=None, row=None, col=None):
         if not self.valid_parameters(value, row, col):
             return None
