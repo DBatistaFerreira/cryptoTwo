@@ -53,20 +53,21 @@ def convert_puzzle_input(str_puzzle):
     return puzzle
 
 
+def build_goal_state(puzzle):
+    goal_state = np.zeros(np.array(puzzle).shape, dtype=int)
+    i = 1
+    for row in range(len(puzzle)):
+        for col in range(len(puzzle)):
+            goal_state[row][col] = i
+            i += 1
+
+    return goal_state
+
+
 class Puzzle:
     def __init__(self, puzzle=None):
         self.s_puzzle = np.array(puzzle)
-        self.goal_state = self.build_goal_state(puzzle)
-
-    def build_goal_state(self, puzzle):
-        goal_state = np.zeros(np.array(puzzle).shape, dtype=int)
-        i = 1
-        for row in range(len(puzzle)):
-            for col in range(len(puzzle)):
-                goal_state[row][col] = i
-                i += 1
-
-        return goal_state
+        self.goal_state = build_goal_state(puzzle)
 
     def set_puzzle(self, puzzle):
         self.s_puzzle = puzzle
