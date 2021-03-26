@@ -56,6 +56,17 @@ def convert_puzzle_input(str_puzzle):
 class Puzzle:
     def __init__(self, puzzle=None):
         self.s_puzzle = np.array(puzzle)
+        self.goal_state = self.build_goal_state(puzzle)
+
+    def build_goal_state(self, puzzle):
+        goal_state = np.zeros(np.array(puzzle).shape, dtype=int)
+        i = 1
+        for row in range(len(puzzle)):
+            for col in range(len(puzzle)):
+                goal_state[row][col] = i
+                i += 1
+
+        return goal_state
 
     def set_puzzle(self, puzzle):
         self.s_puzzle = puzzle
@@ -63,13 +74,19 @@ class Puzzle:
     def get_puzzle(self):
         return self.s_puzzle
 
+    def set_goal(self, goal):
+        self.goal_state = goal
+
+    def get_goal(self):
+        return self.goal_state
+
     def get_left(self, value=None, row=None, col=None):
         if not self.valid_parameters(value, row, col):
             return None
 
         if value is not None:
-            row = self.get_value_row(value)
-            col = self.get_value_col(value)
+            row = self.get_row_of(value)
+            col = self.get_col_of(value)
 
         return self.s_puzzle[row][col - 1] if col - 1 >= 0 else None
 
@@ -78,8 +95,8 @@ class Puzzle:
             return None
 
         if value is not None:
-            row = self.get_value_row(value)
-            col = self.get_value_col(value)
+            row = self.get_row_of(value)
+            col = self.get_col_of(value)
 
         return self.s_puzzle[row][col + 1] if col + 1 < self.len_col() else None
 
@@ -88,8 +105,8 @@ class Puzzle:
             return None
 
         if value is not None:
-            row = self.get_value_row(value)
-            col = self.get_value_col(value)
+            row = self.get_row_of(value)
+            col = self.get_col_of(value)
 
         return self.s_puzzle[row - 1][col] if row - 1 >= 0 else None
 
@@ -98,8 +115,8 @@ class Puzzle:
             return None
 
         if value is not None:
-            row = self.get_value_row(value)
-            col = self.get_value_col(value)
+            row = self.get_row_of(value)
+            col = self.get_col_of(value)
 
         return self.s_puzzle[row + 1][col] if row + 1 < self.len_row() else None
 
@@ -108,8 +125,8 @@ class Puzzle:
             return None
 
         if value is not None:
-            row = self.get_value_row(value)
-            col = self.get_value_col(value)
+            row = self.get_row_of(value)
+            col = self.get_col_of(value)
 
         return (row, col - 1) if col - 1 >= 0 else None
 
@@ -118,8 +135,8 @@ class Puzzle:
             return None
 
         if value is not None:
-            row = self.get_value_row(value)
-            col = self.get_value_col(value)
+            row = self.get_row_of(value)
+            col = self.get_col_of(value)
 
         return (row, col + 1) if col + 1 < self.len_col() else None
 
@@ -128,8 +145,8 @@ class Puzzle:
             return None
 
         if value is not None:
-            row = self.get_value_row(value)
-            col = self.get_value_col(value)
+            row = self.get_row_of(value)
+            col = self.get_col_of(value)
 
         return (row - 1, col) if row - 1 >= 0 else None
 
@@ -138,22 +155,22 @@ class Puzzle:
             return None
 
         if value is not None:
-            row = self.get_value_row(value)
-            col = self.get_value_col(value)
+            row = self.get_row_of(value)
+            col = self.get_col_of(value)
 
         return (row + 1, col) if row + 1 < self.len_row() else None
 
     def get_value_at(self, row, col):
         return None if row >= self.len_row() or row < 0 or col >= self.len_col() or col < 0 else self.s_puzzle[row][col]
 
-    def get_value_index(self, value):
+    def get_index_of(self, value):
         return np.where(self.s_puzzle == value)[0][0], np.where(self.s_puzzle == value)[1][0]
 
-    def get_value_row(self, value):
-        return self.get_value_index(value)[0]
+    def get_row_of(self, value):
+        return self.get_index_of(value)[0]
 
-    def get_value_col(self, value):
-        return self.get_value_index(value)[1]
+    def get_col_of(self, value):
+        return self.get_index_of(value)[1]
 
     def get_n(self):
         return len(self.s_puzzle) * len(self.s_puzzle[0])
@@ -183,7 +200,7 @@ class Puzzle:
             return None
 
         if value is not None:
-            row, col = self.get_value_index(value)
+            row, col = self.get_index_of(value)
 
         adjacent = []
         if self.get_left(row=row, col=col) is not None:
@@ -202,8 +219,8 @@ class Puzzle:
 
     def swap(self, value1, value2):
         if self.is_adjacent(value1, value2):
-            row1, col1 = self.get_value_index(value1)
-            row2, col2 = self.get_value_index(value2)
+            row1, col1 = self.get_index_of(value1)
+            row2, col2 = self.get_index_of(value2)
             self.s_puzzle[row2][col2] = value1
             self.s_puzzle[row1][col1] = value2
             return True

@@ -16,10 +16,10 @@ def main():
 def test(puzzle):
     print("=================")
     value = 1
-    row = puzzle.get_value_row(value)
-    col = puzzle.get_value_col(value)
+    row = puzzle.get_row_of(value)
+    col = puzzle.get_col_of(value)
     print(f"puzzle: \n{puzzle.get_puzzle()}")
-    print(f"value: {value} at {puzzle.get_value_index(value)}")
+    print(f"value: {value} at {puzzle.get_index_of(value)}")
     print(f"top: {puzzle.get_top(value)} at {puzzle.get_top_index(value)}")
     print(f"left: {puzzle.get_left(value)} at {puzzle.get_left_index(value)}")
     print(f"right: {puzzle.get_right(value)} at {puzzle.get_right_index(value)}")
@@ -37,6 +37,8 @@ def test(puzzle):
     print(f"swap {value1} and {value2}")
     print(f"{puzzle.swap(value1, value2)}")
     print(f"{puzzle.get_puzzle()}")
+
+    print(f"goal: \n{puzzle.goal_state}")
 
 
 if __name__ == "__main__":
