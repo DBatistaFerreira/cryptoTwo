@@ -2,7 +2,6 @@ import numpy as np
 from sys import maxsize
 from math import sqrt
 
-
 astar_solution_path_output = "astar_solution_path_output.txt"
 astar_search_path_output = "astar_search_path_output.txt"
 
@@ -53,6 +52,10 @@ class AStar:
 
     def swap_top_score_h1(self, current):
         top = self.puzzle.get_top(current)
+
+        if self.closed[self.puzzle.get_row_of(top)][self.puzzle.get_col_of(top)]:
+            return maxsize
+
         self.puzzle.swap(current, top)
         score = self.h1_score()
         self.puzzle.swap(current, top)
@@ -61,6 +64,8 @@ class AStar:
 
     def swap_left_score_h1(self, current):
         left = self.puzzle.get_left(current)
+        if self.closed[self.puzzle.get_row_of(left)][self.puzzle.get_col_of(left)]:
+            return maxsize
         self.puzzle.swap(current, left)
         score = self.h1_score()
         self.puzzle.swap(current, left)
@@ -69,6 +74,8 @@ class AStar:
 
     def swap_right_score_h1(self, current):
         right = self.puzzle.get_right(current)
+        if self.closed[self.puzzle.get_row_of(right)][self.puzzle.get_col_of(right)]:
+            return maxsize
         self.puzzle.swap(current, right)
         score = self.h1_score()
         self.puzzle.swap(current, right)
@@ -77,6 +84,8 @@ class AStar:
 
     def swap_bottom_score_h1(self, current):
         bottom = self.puzzle.get_bottom(current)
+        if self.closed[self.puzzle.get_row_of(bottom)][self.puzzle.get_col_of(bottom)]:
+            return maxsize
         self.puzzle.swap(current, bottom)
         score = self.h1_score()
         self.puzzle.swap(current, bottom)
@@ -209,8 +218,31 @@ class AStar:
         swap_top_score, swap_left_score, swap_right_score, swap_bottom_score = self.get_swap_scores_h1(current)
         if current == self.puzzle.goal_state[current_row][current_col]:
             self.closed[current_row][current_col] = True
-        elif swap_top_score < (swap_left_score or swap_right_score or swap_bottom_score):
-            self.puzzle.swap(current, top)
+        else:
+            if swap_top_score <= swap_bottom_score:
+                if swap_top_score <= swap_right_score and swap_top_score <= swap_left_score:
+                    self.puzzle.swap(current, top)
+                elif swap_right_score < swap_left_score:
+                    self.puzzle.swap(current, right)
+                elif swap_right_score == swap_left_score:
+                    if self.belongs_on_current_row(current):
+                        self.puzzle.swap(current, left)
+                    else:
+                        self.puzzle.swap(current, right)
+                else:
+                    self.puzzle.swap(current, left)
+            else:
+                if swap_bottom_score < swap_right_score and swap_bottom_score < swap_left_score:
+                    self.puzzle.swap(current, bottom)
+                elif swap_right_score < swap_left_score:
+                    self.puzzle.swap(current, right)
+                elif swap_right_score == swap_left_score:
+                    if self.belongs_on_current_row(current):
+                        self.puzzle.swap(current, left)
+                    else:
+                        self.puzzle.swap(current, right)
+                else:
+                    self.puzzle.swap(current, left)
 
     def star_swap_h2(self, current):
         top, left, right, bottom = self.get_adjacent(current)
@@ -244,21 +276,31 @@ class AStar:
                 else:
                     self.puzzle.swap(current, right)
 
-    def solve(self):
-        if self.reached_goal_state():
+    def solve(self, heuristic):
+        if heuristic != 1 and heuristic != 2:
+            self.solution.write(f"Invalid heuristic [{heuristic}]. Heuristic can only be 1 or 2.")
+            self.search.write(f"Invalid heuristic [{heuristic}]. Heuristic can only be 1 or 2.")
+            self.close_files()
+            return False
+
+        if self.puzzle.is_goal_state():
             self.solution.write("Already in goal state.")
             self.search.write("Already in goal state.")
             self.close_files()
             return True
 
+        print(f"using heuristic: {heuristic}")
+
         for current in range_inclusive(1, self.puzzle.get_n()):
-            print(f"\n===========\ncurrent: \n{self.puzzle.s_puzzle}\nclosed: \n{self.closed}\n============")
             while not self.closed[self.belongs_on_row_index(current)][self.belongs_on_col_index(current)]:
-                self.star_swap_h2(current)
+                if heuristic == 1:
+                    self.star_swap_h1(current)
+                else:
+                    self.star_swap_h2(current)
 
         self.close_files()
 
-        if not self.reached_goal_state():
+        if not self.puzzle.is_goal_state():
             self.no_solution()
             return False
         # elif time to solve longer than 60 seconds no solution
