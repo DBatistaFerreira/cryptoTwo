@@ -224,6 +224,20 @@ class Puzzle:
     def is_adjacent(self, value1, value2):
         return value2 in self.get_adjacent(value1)
 
+    def is_goal_state(self):
+        is_correct = []
+        for row in range(self.len_row()):
+            for col in range(self.len_col()):
+                if self.s_puzzle[row][col] == self.goal_state[row][col]:
+                    is_correct.append(True)
+                else:
+                    is_correct.append(False)
+
+        if is_correct.__contains__(False):
+            return False
+
+        return True
+
     def swap(self, value1, value2):
         if self.is_adjacent(value1, value2):
             row1, col1 = self.get_index_of(value1)
