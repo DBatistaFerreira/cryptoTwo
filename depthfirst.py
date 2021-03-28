@@ -1,4 +1,3 @@
-# Using a Python dictionary to act as an adjacency list
 import copy
 import time
 
@@ -23,16 +22,6 @@ class Stack:
 
     def size(self):
         return len(self.items)
-
-
-graph = {
-    'A': ['B', 'C'],
-    'B': ['D', 'E'],
-    'C': ['F'],
-    'D': [],
-    'E': ['F'],
-    'F': []
-}
 
 
 def get_next_states_from_possible_moves(puzzle):
