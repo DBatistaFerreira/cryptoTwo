@@ -2,7 +2,7 @@ from typing import List
 
 import numpy as np
 
-np.random.seed(0)
+np.random.seed()
 
 
 def format_puzzle(puzzle) -> str:

@@ -1,3 +1,5 @@
+import time
+
 import puzzle as p
 import astar as a
 import numpy as np
@@ -33,7 +35,15 @@ def depth_test():
 
     puzzle = p.Puzzle(s_puzzle)
     depth_first = df.DepthFirst(puzzle)
-    depth_first.solve()
+    start_time = time.time()
+    try:
+        depth_first.solve()
+    except KeyboardInterrupt:
+        pass
+    current_time = time.time()
+    elapsed_time = current_time - start_time
+    print(elapsed_time)
+    depth_first.print_paths()
 
 
 if __name__ == "__main__":
