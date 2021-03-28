@@ -1,22 +1,25 @@
 import copy
-from typing import List
 from math import sqrt
 from numpy import array, zeros
-
 import numpy as np
+from cryptolib import range_inclusive
+
+
+# np.random.seed(0)
 
 
 def format_puzzle(puzzle) -> str:
+    n = int(sqrt(len(puzzle)))
     str_builder = "("
     while puzzle:
-        for i in range(3):
+        for i in range(n):
             if i == 0:
                 str_builder += "("
             str_builder += str(puzzle[i])
-            if i == 2:
+            if i == n - 1:
                 str_builder += ")"
             str_builder += ";"
-        puzzle = puzzle[3:]
+        puzzle = puzzle[n:]
 
     str_builder = str_builder[:-1]
     str_builder += ")"
@@ -24,8 +27,8 @@ def format_puzzle(puzzle) -> str:
     return str_builder
 
 
-def generate_puzzle() -> str:
-    puzzle_values = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+def generate_puzzle(n) -> str:
+    puzzle_values = list(range_inclusive(1, n**2))
 
     puzzle = []
     while puzzle_values:
@@ -37,19 +40,20 @@ def generate_puzzle() -> str:
 
 
 def convert_puzzle_input(str_puzzle) -> array:
-    total_digits = sum(c.isdigit() for c in str_puzzle)
-    n = int(sqrt(total_digits))
+    str_puzzle = str_puzzle.replace("(", "")
+    str_puzzle = str_puzzle.replace(")", "")
+    numbers = str_puzzle.split(";")
+    n = int(sqrt(len(numbers)))
     puzzle = zeros((n, n), dtype=int)
     row = 0
     col = 0
-    for char in str_puzzle:
-        if char.isdigit():
-            puzzle[row][col] = int(char)
-            if col >= 2:
-                row += 1
-                col = 0
-            else:
-                col += 1
+    for number in numbers:
+        puzzle[row][col] = int(number)
+        if col >= n - 1:
+            row += 1
+            col = 0
+        else:
+            col += 1
 
     return puzzle
 
