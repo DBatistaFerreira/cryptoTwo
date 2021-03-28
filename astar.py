@@ -15,6 +15,8 @@ class AStar:
         self.solution = None
         self.search = None
         self.puzzle_number = puzzle_number
+        self.total_swaps = 0
+        self.total_cost = 0
 
     def belongs_on_current_row(self, current):
         return self.belongs_on_row_index(current) == self.puzzle.get_row_of(current)
@@ -156,13 +158,15 @@ class AStar:
         current_row, current_col = self.puzzle.get_index_of(current)
         self.search.write(f"Current state:\n{self.puzzle.s_puzzle}\n\n")
         if current == self.puzzle.goal_state[current_row][current_col]:
-            self.search.write(f"Current cell with value [{current}] has reached its goal position.\n")
             self.closed[current_row][current_col] = True
+            self.search.write(f"Current cell with value [{current}] has reached its goal position.\n")
             self.search.write(f"Cell [{current}] has been closed.\n\n")
         else:
-            self.solution.write(f"Current state:\n{self.puzzle.s_puzzle}\n\n")
             top, left, right, bottom = self.get_adjacent(current)
             swap_top_score, swap_left_score, swap_right_score, swap_bottom_score = self.get_swap_scores_h1(current)
+            self.total_cost += min(swap_top_score, swap_left_score, swap_right_score, swap_bottom_score)
+            self.total_swaps += 1
+            self.solution.write(f"Current state:\n{self.puzzle.s_puzzle}\n\n")
             self.search.write(f"Swap scores with heuristic=1:\n")
             self.search.write(f"top:\t{swap_top_score}\n")
             self.search.write(f"left:\t{swap_left_score}\n")
@@ -170,70 +174,72 @@ class AStar:
             self.search.write(f"bottom:\t{swap_bottom_score}\n\n")
             if swap_top_score <= swap_bottom_score:
                 if swap_top_score <= swap_right_score and swap_top_score <= swap_left_score:
+                    self.puzzle.swap(current, top)
                     self.search.write(f"top is chosen as the best swap option.\n")
                     self.search.write(f"Swapping current and top [{current}]<-->[{top}].\n\n")
                     self.solution.write(f"Swapping [{current}]<-->[{top}].\n\n")
-                    self.puzzle.swap(current, top)
                 elif swap_right_score < swap_left_score:
+                    self.puzzle.swap(current, right)
                     self.search.write(f"right is chosen as the best swap option.\n")
                     self.search.write(f"Swapping current and right [{current}]<-->[{right}].\n\n")
                     self.solution.write(f"Swapping [{current}]<-->[{right}].\n\n")
-                    self.puzzle.swap(current, right)
                 elif swap_right_score == swap_left_score:
                     if self.belongs_on_current_row(current):
+                        self.puzzle.swap(current, left)
                         self.search.write(f"left is chosen as the best swap option.\n")
                         self.search.write(f"Swapping current and left [{current}]<-->[{left}].\n\n")
                         self.solution.write(f"Swapping [{current}]<-->[{left}].\n\n")
-                        self.puzzle.swap(current, left)
                     else:
+                        self.puzzle.swap(current, right)
                         self.search.write(f"right is chosen as the best swap option.\n")
                         self.search.write(f"Swapping current and right [{current}]<-->[{right}].\n\n")
                         self.solution.write(f"Swapping [{current}]<-->[{right}].\n\n")
-                        self.puzzle.swap(current, right)
                 else:
+                    self.puzzle.swap(current, left)
                     self.search.write(f"left is chosen as the best swap option.\n")
                     self.search.write(f"Swapping current and left [{current}]<-->[{left}].\n\n")
                     self.solution.write(f"Swapping [{current}]<-->[{left}].\n\n")
-                    self.puzzle.swap(current, left)
             else:
                 if swap_bottom_score < swap_right_score and swap_bottom_score < swap_left_score:
+                    self.puzzle.swap(current, bottom)
                     self.search.write(f"bottom is chosen as the best swap option.\n")
                     self.search.write(f"Swapping current and bottom [{current}]<-->[{bottom}].\n\n")
                     self.solution.write(f"Swapping [{current}]<-->[{bottom}].\n\n")
-                    self.puzzle.swap(current, bottom)
                 elif swap_right_score < swap_left_score:
+                    self.puzzle.swap(current, right)
                     self.search.write(f"right is chosen as the best swap option.\n")
                     self.search.write(f"Swapping current and bottom [{current}]<-->[{right}].\n\n")
                     self.solution.write(f"Swapping [{current}]<-->[{right}].\n\n")
-                    self.puzzle.swap(current, right)
                 elif swap_right_score == swap_left_score:
                     if self.belongs_on_current_row(current):
+                        self.puzzle.swap(current, left)
                         self.search.write(f"left is chosen as the best swap option.\n")
                         self.search.write(f"Swapping current and left [{current}]<-->[{left}].\n\n")
                         self.solution.write(f"Swapping [{current}]<-->[{left}].\n\n")
-                        self.puzzle.swap(current, left)
                     else:
+                        self.puzzle.swap(current, right)
                         self.search.write(f"right is chosen as the best swap option.\n")
                         self.search.write(f"Swapping current and right [{current}]<-->[{right}].\n\n")
                         self.solution.write(f"Swapping [{current}]<-->[{right}].\n\n")
-                        self.puzzle.swap(current, right)
                 else:
+                    self.puzzle.swap(current, left)
                     self.search.write(f"left is chosen as the best swap option.\n")
                     self.search.write(f"Swapping current and left [{current}]<-->[{left}].\n\n")
                     self.solution.write(f"Swapping [{current}]<-->[{left}].\n\n")
-                    self.puzzle.swap(current, left)
 
     def star_swap_h2(self, current):
         current_row, current_col = self.puzzle.get_index_of(current)
         self.search.write(f"Current state:\n{self.puzzle.s_puzzle}\n\n")
         if self.belongs_on_current_row(current) and self.belongs_on_current_col(current):
-            self.search.write(f"Current cell with value [{current}] has reached its goal position.\n")
             self.closed[current_row][current_col] = True
+            self.search.write(f"Current cell with value [{current}] has reached its goal position.\n")
             self.search.write(f"Cell [{current}] has been closed.\n\n")
         else:
-            self.solution.write(f"Current state:\n{self.puzzle.s_puzzle}\n\n")
             top, left, right, bottom = self.get_adjacent(current)
             swap_top_score, swap_left_score, swap_right_score, swap_bottom_score = self.get_swap_scores_h2(current)
+            self.total_cost += min(swap_top_score, swap_left_score, swap_right_score, swap_bottom_score)
+            self.total_swaps += 1
+            self.solution.write(f"Current state:\n{self.puzzle.s_puzzle}\n\n")
             self.search.write(f"Swap scores with heuristic=2:\n")
             self.search.write(f"top:\t{swap_top_score}\n")
             self.search.write(f"left:\t{swap_left_score}\n")
@@ -242,60 +248,60 @@ class AStar:
             if self.belongs_on_current_row(current):
                 self.search.write(f"Current cell [{current}] belongs on current row.\n")
                 if swap_left_score < swap_right_score:
+                    self.puzzle.swap(current, left)
                     self.search.write(f"left is chosen as best swap option.\n")
                     self.search.write(f"Swapping current and left [{current}]<-->[{left}].\n\n")
                     self.solution.write(f"Swapping current and left [{current}]<-->[{left}].\n\n")
-                    self.puzzle.swap(current, left)
                 else:
+                    self.puzzle.swap(current, right)
                     self.search.write(f"right is chosen as best swap option.\n")
                     self.search.write(f"Swapping current and right [{current}]<-->[{right}].\n\n")
                     self.solution.write(f"Swapping current and right [{current}]<-->[{right}].\n\n")
-                    self.puzzle.swap(current, right)
             elif self.belongs_on_current_col(current):
                 self.search.write(f"Current cell [{current}] belongs on current col.\n")
                 if swap_top_score < swap_bottom_score:
+                    self.puzzle.swap(current, top)
                     self.search.write(f"top is chosen as best swap option.\n")
                     self.search.write(f"Swapping current and top [{current}]<-->[{top}].\n\n")
                     self.solution.write(f"Swapping current and top [{current}]<-->[{top}].\n\n")
-                    self.puzzle.swap(current, top)
                 else:
+                    self.puzzle.swap(current, bottom)
                     self.search.write(f"bottom is chosen as best swap option.\n")
                     self.search.write(f"Swapping current and bottom [{current}]<-->[{bottom}].\n\n")
                     self.solution.write(f"Swapping current and bottom [{current}]<-->[{bottom}].\n\n")
-                    self.puzzle.swap(current, bottom)
             else:
                 if swap_top_score <= swap_bottom_score:
                     if swap_top_score <= swap_left_score and swap_top_score <= swap_right_score:
+                        self.puzzle.swap(current, top)
                         self.search.write(f"top is chosen as best swap option.\n")
                         self.search.write(f"Swapping current and bottom [{current}]<-->[{top}].\n\n")
                         self.solution.write(f"Swapping current and bottom [{current}]<-->[{top}].\n\n")
-                        self.puzzle.swap(current, top)
                     elif swap_left_score < swap_right_score:
+                        self.puzzle.swap(current, left)
                         self.search.write(f"left is chosen as best swap option.\n")
                         self.search.write(f"Swapping current and bottom [{current}]<-->[{left}].\n\n")
                         self.solution.write(f"Swapping current and bottom [{current}]<-->[{left}].\n\n")
-                        self.puzzle.swap(current, left)
                     else:
+                        self.puzzle.swap(current, right)
                         self.search.write(f"right is chosen as best swap option.\n")
                         self.search.write(f"Swapping current and bottom [{current}]<-->[{right}].\n\n")
                         self.solution.write(f"Swapping current and bottom [{current}]<-->[{right}].\n\n")
-                        self.puzzle.swap(current, right)
                 else:
                     if swap_bottom_score <= swap_left_score and swap_bottom_score <= swap_right_score:
+                        self.puzzle.swap(current, bottom)
                         self.search.write(f"bottom is chosen as best swap option.\n")
                         self.search.write(f"Swapping current and bottom [{current}]<-->[{bottom}].\n\n")
                         self.solution.write(f"Swapping current and bottom [{current}]<-->[{bottom}].\n\n")
-                        self.puzzle.swap(current, bottom)
                     elif swap_left_score <= swap_right_score:
+                        self.puzzle.swap(current, left)
                         self.search.write(f"left is chosen as best swap option.\n")
                         self.search.write(f"Swapping current and bottom [{current}]<-->[{left}].\n\n")
                         self.solution.write(f"Swapping current and bottom [{current}]<-->[{left}].\n\n")
-                        self.puzzle.swap(current, left)
                     else:
+                        self.puzzle.swap(current, right)
                         self.search.write(f"right is chosen as best swap option.\n")
                         self.search.write(f"Swapping current and bottom [{current}]<-->[{right}].\n\n")
                         self.solution.write(f"Swapping current and bottom [{current}]<-->[{right}].\n\n")
-                        self.puzzle.swap(current, right)
 
     def solve(self, heuristic=2):
         if heuristic != 1 and heuristic != 2:
@@ -310,12 +316,11 @@ class AStar:
         self.solution = open(astar_solution_file, "w")
         self.search = open(astar_search_file, "w")
 
-        initial = np.array(self.puzzle.s_puzzle)
         self.search.write(f"=============================== SOLVE SEARCH START ===============================\n\n")
         self.solution.write(f"============================= SOLVE SOLUTION START =============================\n\n")
-        self.search.write(f"Initial:\n{initial}\n\n")
+        self.search.write(f"Initial:\n{self.puzzle.initial_state}\n\n")
         self.search.write(f"Goal:\n{self.puzzle.goal_state}\n\n")
-        self.solution.write(f"Initial:\n{initial}\n\n")
+        self.solution.write(f"Initial:\n{self.puzzle.initial_state}\n\n")
         self.solution.write(f"Goal:\n{self.puzzle.goal_state}\n\n")
         self.solution.write(f"---------------------- Solution -----------------------\n\n")
 
@@ -332,29 +337,36 @@ class AStar:
         self.solution.write(f"Current:\n{self.puzzle.s_puzzle}\n\n")
 
         if self.puzzle.is_goal_state():
-            self.solution.write(f"----------------- Goal State Reached! -----------------\n\n")
-            self.solution.write(f"Initial:\n{initial}\n\n")
-            self.solution.write(f"Current:\n{self.puzzle.s_puzzle}\n\n")
-            self.solution.write(f"Goal:\n{self.puzzle.goal_state}\n\n")
-            self.solution.write(f"A* algorithm with heuristic={heuristic} stats:\n")
-            self.solution.write(f"Solved:\t{True}\n")
-            self.solution.write(f"Time:\t**TIME**\n\n")
-            self.solution.write(f"============================== SOLVE SOLUTION END ==============================\n\n")
-            self.search.write(f"----------------- Goal State Reached! -----------------\n\n")
-            self.search.write(f"Initial:\n{initial}\n\n")
-            self.search.write(f"Current:\n{self.puzzle.s_puzzle}\n\n")
-            self.search.write(f"Goal:\n{self.puzzle.goal_state}\n\n")
-            self.search.write(f"A* algorithm with heuristic={heuristic} stats:\n")
-            self.search.write(f"Solved:\t{True}\n")
-            self.search.write(f"Time:\t**TIME**\n\n")
-            self.search.write(f"================================ SOLVE SEARCH END ================================\n\n")
-            self.close_files()
+            self.write_stats(heuristic)
             return True
 
         self.no_solution(astar_solution_file, astar_search_file)
         # elif time to solve longer than 60 seconds no solution
 
         return False
+
+    def write_stats(self, heuristic):
+        self.solution.write(f"----------------- Goal State Reached! -----------------\n\n")
+        self.solution.write(f"Initial:\n{self.puzzle.initial_state}\n\n")
+        self.solution.write(f"Current:\n{self.puzzle.s_puzzle}\n\n")
+        self.solution.write(f"Goal:\n{self.puzzle.goal_state}\n\n")
+        self.solution.write(f"A* algorithm with heuristic={heuristic} stats:\n")
+        self.solution.write(f"Solved:\t{True}\n")
+        self.solution.write(f"Time:\t**TIME**\n")
+        self.solution.write(f"Cost:\t{self.total_cost}\n")
+        self.solution.write(f"Swaps:\t{self.total_swaps}\n\n")
+        self.solution.write(f"============================== SOLVE SOLUTION END ==============================")
+        self.search.write(f"----------------- Goal State Reached! -----------------\n\n")
+        self.search.write(f"Initial:\n{self.puzzle.initial_state}\n\n")
+        self.search.write(f"Current:\n{self.puzzle.s_puzzle}\n\n")
+        self.search.write(f"Goal:\n{self.puzzle.goal_state}\n\n")
+        self.search.write(f"A* algorithm with heuristic={heuristic} stats:\n")
+        self.search.write(f"Solved:\t{True}\n")
+        self.search.write(f"Time:\t**TIME**\n")
+        self.search.write(f"Cost:\t{self.total_cost}\n")
+        self.search.write(f"Swaps:\t{self.total_swaps}\n\n")
+        self.search.write(f"================================ SOLVE SEARCH END ================================")
+        self.close_files()
 
     def no_solution(self, astar_solution_path, astar_search_path):
         self.solution = open(astar_solution_path, "w")
