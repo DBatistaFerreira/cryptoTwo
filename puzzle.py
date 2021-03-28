@@ -3,8 +3,6 @@ from typing import List
 
 import numpy as np
 
-np.random.seed(0)
-
 
 def format_puzzle(puzzle) -> str:
     str_builder = "("
