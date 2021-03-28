@@ -24,6 +24,12 @@ def test():
         solvable2 = star2.solve(2)
         solved += 1
         print(f"=========solved: {solved}=========")
+    # test()
+    depth_test()
+
+def depth_test():
+    depth_first = df.DepthFirst(p.convert_puzzle_input(p.generate_puzzle()))
+    depth_first.solve()
 
 
 if __name__ == "__main__":

@@ -2,6 +2,29 @@
 import copy
 from functools import lru_cache
 
+from puzzle import Puzzle
+
+
+class Stack:
+    def __init__(self):
+        self.items = []
+
+    def isEmpty(self):
+        return self.items == []
+
+    def push(self, item):
+        self.items.append(item)
+
+    def pop(self):
+        return self.items.pop()
+
+    def peek(self):
+        return self.items[len(self.items) - 1]
+
+    def size(self):
+        return len(self.items)
+
+
 graph = {
     'A': ['B', 'C'],
     'B': ['D', 'E'],
@@ -11,55 +34,68 @@ graph = {
     'F': []
 }
 
+
+def get_next_states_from_possible_moves(puzzle):
+    list_of_new_puzzle_states_from_possible_moves = []
+
+    adjacent = puzzle.get_adjacent(row=puzzle.row, col=puzzle.col)
+
+    for value in adjacent:
+        row, col = puzzle.get_index_of(value)
+        copy_of_puzzle = Puzzle(puzzle=copy.deepcopy(puzzle.s_puzzle))
+        copy_of_puzzle.set_index(row, col)
+        copy_of_puzzle.swap(value1=puzzle.get_value_at(puzzle.row, puzzle.col), value2=value)
+        copy_of_puzzle.set_parent(puzzle)
+        copy_of_puzzle.set_depth(puzzle.depth + 1)
+        list_of_new_puzzle_states_from_possible_moves.append(copy_of_puzzle)
+
+    return list_of_new_puzzle_states_from_possible_moves
+
+
 class DepthFirst:
     def __init__(self, puzzle):
         self.puzzle = puzzle
         self.graph = {}
         self.found = False
         self.visited = set()  # Set to keep track of visited nodes.
-        # self.solution = open(depth_first_solution_path_output, "w")
-        # self.search = open(depth_first_astar_search_path_output, "w")
+        self.solution = open("depth_first_solution_path.txt", "w")
+        self.search = open("depth_first_search_path.txt", "w")
 
-    @lru_cache()
-    def generate_graph(self, puzzle):
-        self.graph[puzzle] = self.generate_all_states(puzzle)
-        self.visited.add(puzzle)
-        for puzzle in self.graph[puzzle]:
-            if puzzle in self.visited:
-                return
-            else:
-                if not self.found:
-                    if puzzle.is_goal_state():
-                        print("found")
-                        self.found = True
-                    else:
-                        self.generate_graph(puzzle)
-                else:
-                    return
+    def solve(self) -> bool:
+        start_node = self.puzzle
+        stack = Stack()
+        stack.push(start_node)
+        current = stack.pop()
+        visited = set()
+        search_path = [current]
+        while not current.is_goal_state():
+            temp = get_next_states_from_possible_moves(current)
+            for item in temp:
+                if item not in visited:
+                    stack.push(item)
+            visited.add(current)
+            current = stack.pop()
+            search_path.append(current)
+            # if current.depth > depth:
+            #     break
+        path = []
+        while current is not None:
+            path.append(current)
+            current = current.parent
 
-    @lru_cache()
-    def generate_all_states(self, puzzle):
+        for index, puzzle in enumerate(search_path):
+            self.search.write(f"\n============================ Step {index} ============================\n")
+            self.search.write(str(puzzle.s_puzzle))
 
-        set_of_possible_states = set()
+        path.reverse()
+        for index, puzzle in enumerate(path):
+            self.solution.write(f"\n============================ Step {index} ============================\n")
+            self.solution.write(str(puzzle.s_puzzle))
 
-        for row in range(3):
-            for col in range(3):
-                adjacent = puzzle.get_adjacent(row=row, col=col)
+        self.close_files()
 
-                for value in adjacent:
-                    copy_of_puzzle = copy.deepcopy(puzzle)
-                    copy_of_puzzle.swap(value1=puzzle.get_value_at(row=row, col=col), value2=value)
-                    set_of_possible_states.add(copy_of_puzzle)
-                    if copy_of_puzzle.is_goal_state():
-                        print("found")
-                        self.found = True
+        return True
 
-        return set_of_possible_states
-
-    # def depth_first(visited, graph, node):
-    #     if node not in visited:
-    #         print(node)
-    #         visited.add(node)
-    #         for neighbour in graph[node]:
-    #             depth_first(visited, graph, neighbour)
-    #
+    def close_files(self) -> None:
+        self.solution.close()
+        self.search.close()

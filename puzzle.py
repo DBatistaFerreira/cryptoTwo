@@ -1,9 +1,11 @@
+from typing import List
+
 import numpy as np
 
 np.random.seed(0)
 
 
-def format_puzzle(puzzle):
+def format_puzzle(puzzle) -> str:
     str_builder = "("
     while puzzle:
         for i in range(3):
@@ -21,7 +23,7 @@ def format_puzzle(puzzle):
     return str_builder
 
 
-def generate_puzzle():
+def generate_puzzle() -> str:
     puzzle_values = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
     puzzle = []
@@ -33,7 +35,7 @@ def generate_puzzle():
     return format_puzzle(puzzle)
 
 
-def convert_puzzle_input(str_puzzle):
+def convert_puzzle_input(str_puzzle) -> List[List[int]]:
     puzzle = [
         [0, 0, 0],
         [0, 0, 0],
@@ -66,11 +68,25 @@ def build_goal_state(puzzle):
 
 class Puzzle:
     def __init__(self, puzzle=None):
+        self.parent = None
+        self.depth = 0
+        self.row = 0
+        self.col = 0
         self.s_puzzle = np.array(puzzle)
         self.goal_state = build_goal_state(puzzle)
 
     def set_puzzle(self, puzzle):
         self.s_puzzle = puzzle
+
+    def set_index(self, row, col):
+        self.row = row
+        self.col = col
+
+    def set_parent(self, puzzle):
+        self.parent = puzzle
+
+    def set_depth(self, depth):
+        self.depth = depth
 
     def get_puzzle(self):
         return self.s_puzzle
@@ -247,3 +263,12 @@ class Puzzle:
             return True
 
         return False
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, Puzzle):
+            return (self.s_puzzle == other.s_puzzle).all()
+        return False
+
+    def __hash__(self):
+        return hash(str(self.s_puzzle))
