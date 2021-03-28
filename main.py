@@ -5,7 +5,8 @@ import depthfirst as df
 
 
 def main():
-    test()
+    # test()
+    depth_test()
 
 
 def test():
@@ -24,11 +25,14 @@ def test():
         solvable2 = star2.solve(2)
         solved += 1
         print(f"=========solved: {solved}=========")
-    # test()
-    depth_test()
+
 
 def depth_test():
-    depth_first = df.DepthFirst(p.convert_puzzle_input(p.generate_puzzle()))
+    s_puzzle = p.generate_puzzle()
+    s_puzzle = p.convert_puzzle_input(s_puzzle)
+
+    puzzle = p.Puzzle(s_puzzle)
+    depth_first = df.DepthFirst(puzzle)
     depth_first.solve()
 
 

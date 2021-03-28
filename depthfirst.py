@@ -1,6 +1,6 @@
 # Using a Python dictionary to act as an adjacency list
 import copy
-from functools import lru_cache
+import time
 
 from puzzle import Puzzle
 
@@ -68,6 +68,8 @@ class DepthFirst:
         current = stack.pop()
         visited = set()
         search_path = [current]
+        start_time = time.time()
+        seconds = 60
         while not current.is_goal_state():
             temp = get_next_states_from_possible_moves(current)
             for item in temp:
@@ -76,6 +78,11 @@ class DepthFirst:
             visited.add(current)
             current = stack.pop()
             search_path.append(current)
+            current_time = time.time()
+            elapsed_time = current_time - start_time
+            if elapsed_time > seconds:
+                print("No Solution, time exceeded 60 seconds")
+                break
             # if current.depth > depth:
             #     break
         path = []
