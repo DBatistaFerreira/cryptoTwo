@@ -39,10 +39,11 @@ def test():
         print(f"initial: \n{np.array(s_puzzle)}")
         puzzle1 = p.Puzzle(s_puzzle)
         puzzle2 = p.Puzzle(s_puzzle)
-        star1 = a.AStar(puzzle1)
-        star2 = a.AStar(puzzle2)
+        star1 = a.AStar(puzzle1, 0)
+        star2 = a.AStar(puzzle2, 0)
         solvable1 = star1.solve(1)
         solvable2 = star2.solve(2)
+        solvable1 = False
         solved += 1
         print(f"=========solved: {solved}=========")
 
