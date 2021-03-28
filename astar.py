@@ -4,10 +4,7 @@ from math import sqrt
 from pathlib import Path
 from timerwrapper import exit_after
 from time import time
-
-
-def range_inclusive(start, end):
-    return range(start, end + 1)
+from cryptolib import range_inclusive
 
 
 class AStar:
@@ -273,7 +270,7 @@ class AStar:
                     self.search.write(f"Swapping current and bottom [{current}]<-->[{bottom}].\n\n")
                     self.solution.write(f"Swapping current and bottom [{current}]<-->[{bottom}].\n\n")
             else:
-                if swap_top_score <= swap_bottom_score:
+                if swap_top_score < swap_bottom_score:
                     if swap_top_score <= swap_left_score and swap_top_score <= swap_right_score:
                         self.puzzle.swap(current, top)
                         self.search.write(f"top is chosen as best swap option.\n")
@@ -290,21 +287,10 @@ class AStar:
                         self.search.write(f"Swapping current and bottom [{current}]<-->[{right}].\n\n")
                         self.solution.write(f"Swapping current and bottom [{current}]<-->[{right}].\n\n")
                 else:
-                    if swap_bottom_score <= swap_left_score and swap_bottom_score <= swap_right_score:
-                        self.puzzle.swap(current, bottom)
-                        self.search.write(f"bottom is chosen as best swap option.\n")
-                        self.search.write(f"Swapping current and bottom [{current}]<-->[{bottom}].\n\n")
-                        self.solution.write(f"Swapping current and bottom [{current}]<-->[{bottom}].\n\n")
-                    elif swap_left_score <= swap_right_score:
-                        self.puzzle.swap(current, left)
-                        self.search.write(f"left is chosen as best swap option.\n")
-                        self.search.write(f"Swapping current and bottom [{current}]<-->[{left}].\n\n")
-                        self.solution.write(f"Swapping current and bottom [{current}]<-->[{left}].\n\n")
-                    else:
-                        self.puzzle.swap(current, right)
-                        self.search.write(f"right is chosen as best swap option.\n")
-                        self.search.write(f"Swapping current and bottom [{current}]<-->[{right}].\n\n")
-                        self.solution.write(f"Swapping current and bottom [{current}]<-->[{right}].\n\n")
+                    self.puzzle.swap(current, right)
+                    self.search.write(f"right is chosen as best swap option.\n")
+                    self.search.write(f"Swapping current and bottom [{current}]<-->[{right}].\n\n")
+                    self.solution.write(f"Swapping current and bottom [{current}]<-->[{right}].\n\n")
 
     def start(self, heuristic=2):
         if heuristic != 1 and heuristic != 2:
@@ -344,7 +330,7 @@ class AStar:
             return False
 
     def get_total_time(self):
-        return "{:.2f}s".format(round(self.total_time, 2))
+        return "{:.4f}s".format(round(self.total_time, 4))
 
     def write_stats(self, heuristic):
         self.solution.write(f"----------------- Goal State Reached! -----------------\n\n")
