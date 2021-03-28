@@ -14,9 +14,10 @@ class IterativeDeepening:
         self.visited = set()  # Set to keep track of visited nodes.
         self.search_path = []
         self.solution_node = None
-        Path(f"algorithm_outputs/itdeep/").mkdir(parents=True, exist_ok=True)
-        self.solution = open(f"{puzzle_number}_id_solution_puzzle.txt", "w")
-        self.search = open(f"{puzzle_number}_id_search_puzzle.txt", "w")
+        output_dir = f"algorithm_outputs/itdeep/"
+        Path(output_dir).mkdir(parents=True, exist_ok=True)
+        self.solution = open(f"{output_dir}{puzzle_number}_id_solution_puzzle.txt", "w")
+        self.search = open(f"{output_dir}{puzzle_number}_id_search_puzzle.txt", "w")
 
     def solve(self):
         def algorithm(depth):
