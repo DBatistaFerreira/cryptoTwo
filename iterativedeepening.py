@@ -1,5 +1,7 @@
 import time
 
+from attr import dataclass
+
 from puzzle import get_next_states_from_possible_moves
 from stack import Stack
 from timerwrapper import exit_after
@@ -8,6 +10,9 @@ from pathlib import Path
 
 class IterativeDeepening:
     def __init__(self, puzzle, puzzle_number):
+        self.total_length_of_the_solution_path = 0
+        self.total_length_of_the_search_path = 0
+        self.execution_time = 0
         self.puzzle = puzzle
         self.graph = {}
         self.solved = False
@@ -60,10 +65,11 @@ class IterativeDeepening:
             pass
         finally:
             current_time = time.time()
-            elapsed_time = current_time - start_time
-            print(f"Final solve time: {int(elapsed_time)}")
-            self.search.write(f"Final solve time: {int(elapsed_time)}")
-            self.solution.write(f"Final solve time: {int(elapsed_time)}")
+            elapsed_time = int(current_time - start_time)
+            self.execution_time = elapsed_time
+            print(f"Final solve time: {elapsed_time} seconds")
+            self.search.write(f"Final solve time: {elapsed_time} seconds")
+            self.solution.write(f"Final solve time: {elapsed_time} seconds")
 
     def print_paths(self):
         if self.solved:
@@ -72,18 +78,21 @@ class IterativeDeepening:
             while current is not None:
                 path.append(current)
                 current = current.parent
+
+            self.total_length_of_the_search_path = len(self.search_path)
             for index, puzzle in enumerate(self.search_path):
                 self.search.write(f"\n============================ Step {index} ============================\n")
                 self.search.write(str(puzzle.s_puzzle))
 
             path.reverse()
+            self.total_length_of_the_solution_path = len(path)
             for index, puzzle in enumerate(path):
                 self.solution.write(f"\n============================ Step {index} ============================\n")
                 self.solution.write(str(puzzle.s_puzzle))
         else:
-            self.search.write(str(self.puzzle.s_puzzle))
+            self.search.write(f"\n{str(self.puzzle.s_puzzle)}")
             self.search.write("\nNo Solution")
-            self.solution.write(str(self.puzzle.s_puzzle))
+            self.solution.write(f"\n{str(self.puzzle.s_puzzle)}")
             self.solution.write("\nNo Solution")
 
         self.close_files()
