@@ -5,39 +5,25 @@ import depthfirst as df
 
 
 def main():
-    s_puzzle = p.generate_puzzle()
-    print("s_puzzle: ", s_puzzle)
-
-    s_puzzle = p.convert_puzzle_input(s_puzzle)
-    print("s_puzzle: ", s_puzzle)
-
-    test(s_puzzle)
+    test()
 
 
-def test(s_puzzle):
-    puzzle = p.Puzzle(s_puzzle)
-    star = a.AStar(puzzle)
-    print(f"current: \n{star.puzzle.s_puzzle}")
-    print(f"goal: \n{star.puzzle.goal_state}")
-    solved = star.solve()
-    print("==== SOLVED ====")
-    print(f"current: \n{star.puzzle.s_puzzle}")
-    print(f"goal: \n{star.puzzle.goal_state}")
-    print(f"solved: {solved}")
-
-    depthfirst = df.DepthFirst(puzzle)
-    depthfirst.generate_graph(puzzle)
-
-    # print(f"h2_score: {star.h1_score()}")
-    # top, left, right = 3, 1, 2
-    # if top <= left and top <= right:
-    #     print("obvs yes")
-    # else:
-    #     print("obvs no")
-    # if top <= (left or right):
-    #     print(f"{top} <= ({left} and {right})\nAMAZING!")
-    # else:
-    #     print(f"nope")
+def test():
+    solvable1 = True
+    solvable2 = True
+    solved = 0
+    while solvable1 and solvable2:
+        s_puzzle = p.generate_puzzle()
+        s_puzzle = p.convert_puzzle_input(s_puzzle)
+        print(f"initial: \n{np.array(s_puzzle)}")
+        puzzle1 = p.Puzzle(s_puzzle)
+        puzzle2 = p.Puzzle(s_puzzle)
+        star1 = a.AStar(puzzle1)
+        star2 = a.AStar(puzzle2)
+        solvable1 = star1.solve(1)
+        solvable2 = star2.solve(2)
+        solved += 1
+        print(f"=========solved: {solved}=========")
 
 
 if __name__ == "__main__":
