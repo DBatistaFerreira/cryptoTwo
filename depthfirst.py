@@ -1,65 +1,66 @@
-# Using a Python dictionary to act as an adjacency list
-import copy
-from functools import lru_cache
+import time
 
-graph = {
-    'A': ['B', 'C'],
-    'B': ['D', 'E'],
-    'C': ['F'],
-    'D': [],
-    'E': ['F'],
-    'F': []
-}
+from puzzle import get_next_states_from_possible_moves
+from stack import Stack
+from timerwrapper import exit_after
+
 
 class DepthFirst:
     def __init__(self, puzzle):
         self.puzzle = puzzle
         self.graph = {}
-        self.found = False
         self.visited = set()  # Set to keep track of visited nodes.
-        # self.solution = open(depth_first_solution_path_output, "w")
-        # self.search = open(depth_first_astar_search_path_output, "w")
+        self.search_path = []
+        self.solution_node = None
+        self.solution = open("depth_first_solution_path.txt", "w")
+        self.search = open("depth_first_search_path.txt", "w")
 
-    @lru_cache()
-    def generate_graph(self, puzzle):
-        self.graph[puzzle] = self.generate_all_states(puzzle)
-        self.visited.add(puzzle)
-        for puzzle in self.graph[puzzle]:
-            if puzzle in self.visited:
-                return
-            else:
-                if not self.found:
-                    if puzzle.is_goal_state():
-                        print("found")
-                        self.found = True
-                    else:
-                        self.generate_graph(puzzle)
-                else:
-                    return
+    def solve(self):
+        @exit_after(60)
+        def algorithm(current_node):
+            while not current_node.is_goal_state():
+                children_nodes = get_next_states_from_possible_moves(current_node)
+                for item in [node for node in children_nodes if node not in visited]:
+                    stack.push(item)
+                visited.add(current_node)
+                current_node = stack.pop()
+                self.search_path.append(current_node)
 
-    @lru_cache()
-    def generate_all_states(self, puzzle):
+            self.solution_node = current_node
 
-        set_of_possible_states = set()
+        visited = set()
+        start_node = self.puzzle
+        stack = Stack()
+        stack.push(start_node)
+        current = stack.pop()
+        self.search_path = [current]
+        start_time = time.time()
+        try:
+            algorithm(current)
+        except KeyboardInterrupt:
+            pass
+        current_time = time.time()
+        elapsed_time = current_time - start_time
+        print(f"Final solve time: {int(elapsed_time)}")
 
-        for row in range(3):
-            for col in range(3):
-                adjacent = puzzle.get_adjacent(row=row, col=col)
+    def print_paths(self):
+        path = []
+        current = self.solution_node
+        while current is not None:
+            path.append(current)
+            current = current.parent
 
-                for value in adjacent:
-                    copy_of_puzzle = copy.deepcopy(puzzle)
-                    copy_of_puzzle.swap(value1=puzzle.get_value_at(row=row, col=col), value2=value)
-                    set_of_possible_states.add(copy_of_puzzle)
-                    if copy_of_puzzle.is_goal_state():
-                        print("found")
-                        self.found = True
+        for index, puzzle in enumerate(self.search_path):
+            self.search.write(f"\n============================ Step {index} ============================\n")
+            self.search.write(str(puzzle.s_puzzle))
 
-        return set_of_possible_states
+        path.reverse()
+        for index, puzzle in enumerate(path):
+            self.solution.write(f"\n============================ Step {index} ============================\n")
+            self.solution.write(str(puzzle.s_puzzle))
 
-    # def depth_first(visited, graph, node):
-    #     if node not in visited:
-    #         print(node)
-    #         visited.add(node)
-    #         for neighbour in graph[node]:
-    #             depth_first(visited, graph, neighbour)
-    #
+        self.close_files()
+
+    def close_files(self) -> None:
+        self.solution.close()
+        self.search.close()
