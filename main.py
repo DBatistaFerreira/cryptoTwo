@@ -1,6 +1,7 @@
 import puzzle as p
 import astar as a
 import numpy as np
+import depthfirst as df
 
 
 def main():
@@ -23,6 +24,9 @@ def test(s_puzzle):
     print(f"current: \n{star.puzzle.s_puzzle}")
     print(f"goal: \n{star.puzzle.goal_state}")
     print(f"solved: {solved}")
+
+    depthfirst = df.DepthFirst(puzzle)
+    depthfirst.generate_graph(puzzle)
 
     # print(f"h2_score: {star.h1_score()}")
     # top, left, right = 3, 1, 2
