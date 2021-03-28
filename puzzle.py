@@ -89,6 +89,7 @@ class Puzzle:
         self.row = 0
         self.col = 0
         self.s_puzzle = np.array(puzzle)
+        self.initial_state = np.array(puzzle)
         self.goal_state = build_goal_state(puzzle)
 
     def set_puzzle(self, puzzle):
