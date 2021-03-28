@@ -1,6 +1,7 @@
 import numpy as np
 from sys import maxsize
 from math import sqrt
+from pathlib import Path
 
 
 def range_inclusive(start, end):
@@ -8,11 +9,12 @@ def range_inclusive(start, end):
 
 
 class AStar:
-    def __init__(self, puzzle):
+    def __init__(self, puzzle, puzzle_number):
         self.puzzle = puzzle
         self.closed = np.zeros((puzzle.len_row(), puzzle.len_col()), dtype=bool)
         self.solution = None
         self.search = None
+        self.puzzle_number = puzzle_number
 
     def belongs_on_current_row(self, current):
         return self.belongs_on_row_index(current) == self.puzzle.get_row_of(current)
@@ -300,11 +302,12 @@ class AStar:
             print(f"Invalid heuristic [{heuristic}]. Heuristic can only be 1 or 2 [Default: heuristic=2].")
             return False
 
-        astar_solution_path = f"astar_solution_path_h{heuristic}.txt"
-        astar_search_path = f"astar_search_path_h{heuristic}.txt"
+        Path(f"algorithm_outputs/astar/h{heuristic}/").mkdir(parents=True, exist_ok=True)
+        astar_solution_file = f"{self.puzzle_number}_astar_solution_h{heuristic}.txt"
+        astar_search_file = f"{self.puzzle_number}_astar_search_h{heuristic}.txt"
 
-        self.solution = open(astar_solution_path, "w")
-        self.search = open(astar_search_path, "w")
+        self.solution = open(astar_solution_file, "w")
+        self.search = open(astar_search_file, "w")
 
         initial = np.array(self.puzzle.s_puzzle)
         self.search.write(f"=============================== SOLVE SEARCH START ===============================\n\n")
@@ -347,7 +350,7 @@ class AStar:
             self.close_files()
             return True
 
-        self.no_solution(astar_solution_path, astar_search_path)
+        self.no_solution(astar_solution_file, astar_search_file)
         # elif time to solve longer than 60 seconds no solution
 
         return False

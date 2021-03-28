@@ -3,6 +3,7 @@ import time
 from puzzle import get_next_states_from_possible_moves
 from stack import Stack
 from timerwrapper import exit_after
+from pathlib import Path
 
 
 class IterativeDeepening:
@@ -13,8 +14,9 @@ class IterativeDeepening:
         self.visited = set()  # Set to keep track of visited nodes.
         self.search_path = []
         self.solution_node = None
-        self.solution = open(f"algorithm_outputs/itdeep/{puzzle_number}_id_solution_puzzle.txt", "w")
-        self.search = open(f"algorithm_outputs/itdeep/{puzzle_number}_id_search_puzzle.txt", "w")
+        Path(f"algorithm_outputs/itdeep/").mkdir(parents=True, exist_ok=True)
+        self.solution = open(f"{puzzle_number}_id_solution_puzzle.txt", "w")
+        self.search = open(f"{puzzle_number}_id_search_puzzle.txt", "w")
 
     def solve(self):
         def algorithm(depth):
