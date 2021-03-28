@@ -1,5 +1,7 @@
 import copy
 from typing import List
+from math import sqrt
+from numpy import array, zeros
 
 import numpy as np
 
@@ -34,12 +36,10 @@ def generate_puzzle() -> str:
     return format_puzzle(puzzle)
 
 
-def convert_puzzle_input(str_puzzle) -> List[List[int]]:
-    puzzle = [
-        [0, 0, 0],
-        [0, 0, 0],
-        [0, 0, 0]
-    ]
+def convert_puzzle_input(str_puzzle) -> array:
+    total_digits = sum(c.isdigit() for c in str_puzzle)
+    n = int(sqrt(total_digits))
+    puzzle = zeros((n, n), dtype=int)
     row = 0
     col = 0
     for char in str_puzzle:
