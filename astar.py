@@ -302,9 +302,10 @@ class AStar:
             print(f"Invalid heuristic [{heuristic}]. Heuristic can only be 1 or 2 [Default: heuristic=2].")
             return False
 
-        Path(f"algorithm_outputs/astar/h{heuristic}/").mkdir(parents=True, exist_ok=True)
-        astar_solution_file = f"{self.puzzle_number}_astar_solution_h{heuristic}.txt"
-        astar_search_file = f"{self.puzzle_number}_astar_search_h{heuristic}.txt"
+        output_dir = f"algorithm_outputs/astar/h{heuristic}/"
+        Path(output_dir).mkdir(parents=True, exist_ok=True)
+        astar_solution_file = f"{output_dir}{self.puzzle_number}_astar_solution_h{heuristic}.txt"
+        astar_search_file = f"{output_dir}{self.puzzle_number}_astar_search_h{heuristic}.txt"
 
         self.solution = open(astar_solution_file, "w")
         self.search = open(astar_search_file, "w")
