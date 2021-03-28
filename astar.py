@@ -2,6 +2,8 @@ import numpy as np
 from sys import maxsize
 from math import sqrt
 from pathlib import Path
+from timerwrapper import exit_after
+from time import time
 
 
 def range_inclusive(start, end):
@@ -17,6 +19,7 @@ class AStar:
         self.puzzle_number = puzzle_number
         self.total_swaps = 0
         self.total_cost = 0
+        self.total_time = None
 
     def belongs_on_current_row(self, current):
         return self.belongs_on_row_index(current) == self.puzzle.get_row_of(current)
@@ -303,7 +306,7 @@ class AStar:
                         self.search.write(f"Swapping current and bottom [{current}]<-->[{right}].\n\n")
                         self.solution.write(f"Swapping current and bottom [{current}]<-->[{right}].\n\n")
 
-    def solve(self, heuristic=2):
+    def start(self, heuristic=2):
         if heuristic != 1 and heuristic != 2:
             print(f"Invalid heuristic [{heuristic}]. Heuristic can only be 1 or 2 [Default: heuristic=2].")
             return False
@@ -324,26 +327,24 @@ class AStar:
         self.solution.write(f"Goal:\n{self.puzzle.goal_state}\n\n")
         self.solution.write(f"---------------------- Solution -----------------------\n\n")
 
-        for current in range_inclusive(1, self.puzzle.get_n()):
-            self.search.write(f"---------------- Evaluating cell with value: [{current}] ----------------\n\n")
-            while not self.closed[self.belongs_on_row_index(current)][self.belongs_on_col_index(current)]:
-                if heuristic == 1:
-                    self.star_swap_h1(current)
-                else:
-                    self.star_swap_h2(current)
+        start_time = time()
+        try:
+            self.solve(heuristic)
+        except KeyboardInterrupt:
+            pass
+        finally:
+            end_time = time()
+            self.total_time = end_time - start_time
+            if self.puzzle.is_goal_state():
+                self.write_stats(heuristic)
+                return True
 
-            self.search.write(f"----------------- Closing cell with value: [{current}] ------------------\n\n")
+            self.no_solution(astar_solution_file, astar_search_file)
 
-        self.solution.write(f"Current:\n{self.puzzle.s_puzzle}\n\n")
+            return False
 
-        if self.puzzle.is_goal_state():
-            self.write_stats(heuristic)
-            return True
-
-        self.no_solution(astar_solution_file, astar_search_file)
-        # elif time to solve longer than 60 seconds no solution
-
-        return False
+    def get_total_time(self):
+        return "{:.2f}s".format(round(self.total_time, 2))
 
     def write_stats(self, heuristic):
         self.solution.write(f"----------------- Goal State Reached! -----------------\n\n")
@@ -352,7 +353,7 @@ class AStar:
         self.solution.write(f"Goal:\n{self.puzzle.goal_state}\n\n")
         self.solution.write(f"A* algorithm with heuristic={heuristic} stats:\n")
         self.solution.write(f"Solved:\t{True}\n")
-        self.solution.write(f"Time:\t**TIME**\n")
+        self.solution.write(f"Time:\t{self.get_total_time()}\n")
         self.solution.write(f"Cost:\t{self.total_cost}\n")
         self.solution.write(f"Swaps:\t{self.total_swaps}\n\n")
         self.solution.write(f"============================== SOLVE SOLUTION END ==============================")
@@ -362,7 +363,7 @@ class AStar:
         self.search.write(f"Goal:\n{self.puzzle.goal_state}\n\n")
         self.search.write(f"A* algorithm with heuristic={heuristic} stats:\n")
         self.search.write(f"Solved:\t{True}\n")
-        self.search.write(f"Time:\t**TIME**\n")
+        self.search.write(f"Time:\t{self.get_total_time()}\n")
         self.search.write(f"Cost:\t{self.total_cost}\n")
         self.search.write(f"Swaps:\t{self.total_swaps}\n\n")
         self.search.write(f"================================ SOLVE SEARCH END ================================")
@@ -374,6 +375,20 @@ class AStar:
         self.solution.write("no solution")
         self.search.write("no solution")
         self.close_files()
+
+    @exit_after(60)
+    def solve(self, heuristic):
+        for current in range_inclusive(1, self.puzzle.get_n()):
+            self.search.write(f"---------------- Evaluating cell with value: [{current}] ----------------\n\n")
+            while not self.closed[self.belongs_on_row_index(current)][self.belongs_on_col_index(current)]:
+                if heuristic == 1:
+                    self.star_swap_h1(current)
+                else:
+                    self.star_swap_h2(current)
+
+            self.search.write(f"----------------- Closing cell with value: [{current}] ------------------\n\n")
+
+        self.solution.write(f"Current:\n{self.puzzle.s_puzzle}\n\n")
 
     def close_files(self):
         self.solution.close()
