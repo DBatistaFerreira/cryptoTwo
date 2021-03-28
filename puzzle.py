@@ -1,8 +1,9 @@
+import copy
 from typing import List
 
 import numpy as np
 
-np.random.seed()
+np.random.seed(0)
 
 
 def format_puzzle(puzzle) -> str:
@@ -64,6 +65,23 @@ def build_goal_state(puzzle):
             i += 1
 
     return goal_state
+
+
+def get_next_states_from_possible_moves(puzzle):
+    list_of_new_puzzle_states_from_possible_moves = []
+
+    adjacent = puzzle.get_adjacent(row=puzzle.row, col=puzzle.col)
+
+    for value in adjacent:
+        row, col = puzzle.get_index_of(value)
+        copy_of_puzzle = Puzzle(puzzle=copy.deepcopy(puzzle.s_puzzle))
+        copy_of_puzzle.set_index(row, col)
+        copy_of_puzzle.swap(value1=puzzle.get_value_at(puzzle.row, puzzle.col), value2=value)
+        copy_of_puzzle.set_parent(puzzle)
+        copy_of_puzzle.set_depth(puzzle.depth + 1)
+        list_of_new_puzzle_states_from_possible_moves.append(copy_of_puzzle)
+
+    return list_of_new_puzzle_states_from_possible_moves
 
 
 class Puzzle:
