@@ -12,14 +12,14 @@ def main():
     generate_puzzle_file()
     puzzles = read_puzzle_file()
     # test(puzzles)
-    # depth_test(puzzles)
-    iterative_deepening_test(puzzles)
+    depth_test(puzzles)
+    # iterative_deepening_test(puzzles)
 
 
 def generate_puzzle_file():
     with open("puzzles.txt", "w") as f:
-        for index in range(1):
-            s_puzzle = p.generate_puzzle()
+        for index in range(4):
+            s_puzzle = p.generate_puzzle(3)
             f.write(s_puzzle)
             f.write("\n")
 
@@ -72,10 +72,22 @@ def test():
 
 
 def depth_test(puzzles):
-    for puzzle in puzzles:
-        depth_first = df.DepthFirst(puzzle)
+    total_length_of_the_solution_paths = 0
+    total_length_of_the_search_paths = 0
+    total_number_of_no_solution = 0
+    total_execution_time = 0
+    for index, puzzle in enumerate(puzzles):
+        depth_first = df.DepthFirst(p.Puzzle(puzzle), index)
         depth_first.solve()
         depth_first.print_paths()
+
+        total_length_of_the_solution_paths += depth_first.total_length_of_the_solution_path
+        total_length_of_the_search_paths += depth_first.total_length_of_the_search_path
+        total_number_of_no_solution += 0 if depth_first.solved else 1
+        total_execution_time += depth_first.execution_time
+
+    print_analysis(len(puzzles), total_execution_time, total_length_of_the_search_paths, total_length_of_the_solution_paths,
+                   total_number_of_no_solution)
 
 
 def iterative_deepening_test(puzzles):
