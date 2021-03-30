@@ -27,7 +27,7 @@ class AStar:
     def belongs_on_row_index(self, current):
         belongs_on_row = None
         for row in range(self.puzzle.len_row()):
-            if current > row * sqrt(self.puzzle.get_n()):
+            if current > row * sqrt(self.puzzle.get_n_squared()):
                 belongs_on_row = row
 
         return belongs_on_row
@@ -35,7 +35,7 @@ class AStar:
     def belongs_on_col_index(self, current):
         belongs_on_col = None
         for col in range(self.puzzle.len_col()):
-            if current == self.belongs_on_row_index(current) * sqrt(self.puzzle.get_n()) + col + 1:
+            if current == self.belongs_on_row_index(current) * sqrt(self.puzzle.get_n_squared()) + col + 1:
                 belongs_on_col = col
 
         return belongs_on_col
@@ -149,7 +149,7 @@ class AStar:
 
     def h1_score(self):
         score = 0
-        for current in range_inclusive(1, self.puzzle.get_n()):
+        for current in range_inclusive(1, self.puzzle.get_n_squared()):
             score += self.manhattan_distance(current)
 
         return score
@@ -366,7 +366,7 @@ class AStar:
 
     @exit_after(60)
     def solve(self, heuristic):
-        for current in range_inclusive(1, self.puzzle.get_n()):
+        for current in range_inclusive(1, self.puzzle.get_n_squared()):
             self.search.write(f"---------------- Evaluating cell with value: [{current}] ----------------\n\n")
             while not self.closed[self.belongs_on_row_index(current)][self.belongs_on_col_index(current)]:
                 if heuristic == 1:

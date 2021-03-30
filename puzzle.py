@@ -210,8 +210,8 @@ class Puzzle:
     def get_col_of(self, value):
         return self.get_index_of(value)[1]
 
-    def get_n(self):
-        return len(self.s_puzzle) * len(self.s_puzzle[0])
+    def get_n_squared(self):
+        return self.len_row() * self.len_col()
 
     def len_row(self):
         return len(self.s_puzzle)
