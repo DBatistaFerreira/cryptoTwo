@@ -18,7 +18,7 @@ def main():
 
 def generate_puzzle_file():
     with open("puzzles.txt", "w") as f:
-        for index in range(4):
+        for index in range(20):
             s_puzzle = p.generate_puzzle(3)
             f.write(s_puzzle)
             f.write("\n")
