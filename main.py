@@ -9,10 +9,10 @@ import iterativedeepening as itdeep
 
 
 def main():
-    generate_puzzle_file()
-    puzzles = read_puzzle_file()
-    # test(puzzles)
-    depth_test(puzzles)
+    # generate_puzzle_file()
+    # puzzles = read_puzzle_file()
+    test()
+    # depth_test(puzzles)
     # iterative_deepening_test(puzzles)
 
 
@@ -34,41 +34,41 @@ def read_puzzle_file():
 
 def test():
     total_solved = 0
-    for n in range(25, 30):
-        s_puzzle = p.generate_puzzle(n)
+    # for n in range(25, 30):
+        # s_puzzle = p.generate_puzzle(n)
+        # s_puzzle = p.convert_puzzle_input(s_puzzle)
+        # print(f"matrix: {n}x{n}")
+        # puzzle = p.Puzzle(s_puzzle)
+        # star = a.AStar(puzzle, 0)
+        # solved = star.start(2)
+        # if not solved:
+        #     print(f"not solved:\n{star.puzzle.initial_state}")
+        #     break
+        # print(f"solved: {solved}")
+        # print(f"time: {star.get_total_time()}")
+        # print(f"swaps: {star.total_swaps}")
+        # total_solved += 1
+        # print(f"======== total solved: {total_solved} ========")
+    solvable1 = True
+    solvable2 = True
+    solved = 0
+    while solvable1 and solvable2:
+        s_puzzle = p.generate_puzzle(30)
         s_puzzle = p.convert_puzzle_input(s_puzzle)
-        print(f"matrix: {n}x{n}")
-        puzzle = p.Puzzle(s_puzzle)
-        star = a.AStar(puzzle, 0)
-        solved = star.start(2)
-        if not solved:
-            print(f"not solved:\n{star.puzzle.initial_state}")
-            break
-        print(f"solved: {solved}")
-        print(f"time: {star.get_total_time()}")
-        print(f"swaps: {star.total_swaps}")
-        total_solved += 1
-        print(f"======== total solved: {total_solved} ========")
-    # solvable1 = True
-    # solvable2 = True
-    # solved = 0
-    # while solvable1 and solvable2:
-    #     s_puzzle = p.generate_puzzle()
-    #     s_puzzle = p.convert_puzzle_input(s_puzzle)
-    #     print(f"initial: \n{np.array(s_puzzle)}")
-    #     puzzle1 = p.Puzzle(s_puzzle)
-    #     puzzle2 = p.Puzzle(s_puzzle)
-    #     star1 = a.AStar(puzzle1, 0)
-    #     star2 = a.AStar(puzzle2, 0)
-    #     # solvable1 = star1.start(1)
-    #     solvable2 = star2.start(2)
-    #     # print(f"time1: {star1.get_total_time()}")
-    #     print(f"time2: {star2.get_total_time()}")
-    #     # print(f"swaps1: {star1.total_swaps}")
-    #     print(f"swaps2: {star2.total_swaps}")
-    #     # solvable2 = False
-    #     solved += 1
-    #     print(f"=========solved: {solved}=========")
+        print(f"initial: \n{np.array(s_puzzle)}")
+        puzzle1 = p.Puzzle(s_puzzle)
+        puzzle2 = p.Puzzle(s_puzzle)
+        star1 = a.AStar(puzzle1, 0)
+        star2 = a.AStar(puzzle2, 0)
+        solvable1 = star1.start(1)
+        solvable2 = star2.start(2)
+        print(f"time1: {star1.get_total_time()}")
+        print(f"time2: {star2.get_total_time()}")
+        print(f"swaps1: {star1.total_swaps}")
+        print(f"swaps2: {star2.total_swaps}")
+        solvable2 = False
+        solved += 1
+        print(f"=========solved: {solved}=========")
 
 
 def depth_test(puzzles):
