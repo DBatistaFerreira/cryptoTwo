@@ -1,19 +1,17 @@
-import math
-from random import random
-
 import puzzle as p
 import astar as a
-import numpy as np
 import depthfirst as df
 import iterativedeepening as itdeep
 
 
 def main():
     # generate_puzzle_file()
-    # puzzles = read_puzzle_file()
-    test()
-    # depth_test(puzzles)
-    # iterative_deepening_test(puzzles)
+
+    puzzles = read_puzzle_file()
+
+    depth_test(puzzles)
+    iterative_deepening_test(puzzles)
+    astar_test(puzzles)
 
 
 def generate_puzzle_file():
@@ -32,7 +30,7 @@ def read_puzzle_file():
     return puzzles
 
 
-def test():
+def astar_test():
     total_solved = 0
     # for n in range(25, 30):
         # s_puzzle = p.generate_puzzle(n)
