@@ -27,7 +27,7 @@ def format_puzzle(puzzle) -> str:
     return str_builder
 
 
-def generate_puzzle(n) -> str:
+def generate_puzzle(n=3) -> str:
     puzzle_values = list(range_inclusive(1, n**2))
 
     puzzle = []
