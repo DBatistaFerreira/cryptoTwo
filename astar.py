@@ -356,6 +356,8 @@ class AStar:
         self.close_files()
 
     def no_solution(self, astar_solution_path, astar_search_path):
+        self.solution.close()
+        self.search.close()
         self.solution = open(astar_solution_path, "w")
         self.search = open(astar_search_path, "w")
         self.solution.write("no solution")
