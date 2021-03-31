@@ -30,43 +30,42 @@ def read_puzzle_file():
     return puzzles
 
 
-def astar_test():
-    total_solved = 0
-    # for n in range(25, 30):
-        # s_puzzle = p.generate_puzzle(n)
-        # s_puzzle = p.convert_puzzle_input(s_puzzle)
-        # print(f"matrix: {n}x{n}")
-        # puzzle = p.Puzzle(s_puzzle)
-        # star = a.AStar(puzzle, 0)
-        # solved = star.start(2)
-        # if not solved:
-        #     print(f"not solved:\n{star.puzzle.initial_state}")
-        #     break
-        # print(f"solved: {solved}")
-        # print(f"time: {star.get_total_time()}")
-        # print(f"swaps: {star.total_swaps}")
-        # total_solved += 1
-        # print(f"======== total solved: {total_solved} ========")
-    solvable1 = True
-    solvable2 = True
-    solved = 0
-    while solvable1 and solvable2:
-        s_puzzle = p.generate_puzzle(30)
-        s_puzzle = p.convert_puzzle_input(s_puzzle)
-        print(f"initial: \n{np.array(s_puzzle)}")
-        puzzle1 = p.Puzzle(s_puzzle)
-        puzzle2 = p.Puzzle(s_puzzle)
-        star1 = a.AStar(puzzle1, 0)
-        star2 = a.AStar(puzzle2, 0)
-        solvable1 = star1.start(1)
-        solvable2 = star2.start(2)
-        print(f"time1: {star1.get_total_time()}")
-        print(f"time2: {star2.get_total_time()}")
-        print(f"swaps1: {star1.total_swaps}")
-        print(f"swaps2: {star2.total_swaps}")
-        solvable2 = False
-        solved += 1
-        print(f"=========solved: {solved}=========")
+def astar_test(puzzles):
+    h1_total_length_of_the_solution_paths = 0
+    h1_total_length_of_the_search_paths = 0
+    h1_total_number_of_no_solution = 0
+    h1_total_execution_time = 0
+    h1_total_cost = 0
+    h2_total_length_of_the_solution_paths = 0
+    h2_total_length_of_the_search_paths = 0
+    h2_total_number_of_no_solution = 0
+    h2_total_execution_time = 0
+    h2_total_cost = 0
+    for puzzle_number, puzzle in enumerate(puzzles):
+        ah1 = a.AStar(p.Puzzle(puzzle), puzzle_number)
+        ah2 = a.AStar(p.Puzzle(puzzle), puzzle_number)
+        h1_solved = ah1.solve(heuristic=1)
+        h2_solved = ah2.solve(heuristic=2)
+        h1_total_length_of_the_search_paths += ah1.total_length_of_search_path
+        h2_total_length_of_the_search_paths += ah2.total_length_of_search_path
+        h1_total_number_of_no_solution += 0 if h1_solved else 1
+        h2_total_number_of_no_solution += 0 if h2_solved else 1
+        h1_total_length_of_the_solution_paths += ah1.total_length_of_solution_path
+        h2_total_length_of_the_solution_paths += ah2.total_length_of_solution_path
+        h1_total_execution_time += ah1.total_time
+        h2_total_execution_time += ah2.total_time
+        h1_total_cost += ah1.total_cost
+        h2_total_cost += ah2.total_cost
+
+    print(f"======================================= h1 =======================================")
+    print_analysis(len(puzzles), h1_total_execution_time, h1_total_length_of_the_search_paths,
+                   h1_total_length_of_the_solution_paths, h1_total_number_of_no_solution, h1_total_cost)
+    print(f"======================================= h1 =======================================")
+    print(f"======================================= h2 =======================================")
+    print_analysis(len(puzzles), h2_total_execution_time, h2_total_length_of_the_search_paths,
+                   h2_total_length_of_the_solution_paths, h2_total_number_of_no_solution, h2_total_cost)
+    print(f"======================================= h2 =======================================")
+    print("done")
 
 
 def depth_test(puzzles):
@@ -84,8 +83,8 @@ def depth_test(puzzles):
         total_number_of_no_solution += 0 if depth_first.solved else 1
         total_execution_time += depth_first.execution_time
 
-    print_analysis(len(puzzles), total_execution_time, total_length_of_the_search_paths, total_length_of_the_solution_paths,
-                   total_number_of_no_solution)
+    print_analysis(len(puzzles), total_execution_time, total_length_of_the_search_paths,
+                   total_length_of_the_solution_paths, total_number_of_no_solution)
 
 
 def iterative_deepening_test(puzzles):
@@ -103,12 +102,12 @@ def iterative_deepening_test(puzzles):
         total_number_of_no_solution += 0 if iterative_deepening.solved else 1
         total_execution_time += iterative_deepening.execution_time
 
-    print_analysis(len(puzzles), total_execution_time, total_length_of_the_search_paths, total_length_of_the_solution_paths,
-                   total_number_of_no_solution)
+    print_analysis(len(puzzles), total_execution_time, total_length_of_the_search_paths,
+                   total_length_of_the_solution_paths, total_number_of_no_solution)
 
 
-def print_analysis(puzzle_count, total_execution_time, total_length_of_the_search_paths, total_length_of_the_solution_paths,
-                   total_number_of_no_solution):
+def print_analysis(puzzle_count, total_execution_time, total_length_of_the_search_paths,
+                   total_length_of_the_solution_paths, total_number_of_no_solution, total_cost=None):
     print(f"\nTotal length of the solution paths = {total_length_of_the_solution_paths}")
     print(f"Average length of the solution paths = {total_length_of_the_solution_paths / (puzzle_count - total_number_of_no_solution if puzzle_count - total_number_of_no_solution > 0 else 1)}")
     print(f"\nTotal length of the search paths = {total_length_of_the_search_paths}")
@@ -117,6 +116,9 @@ def print_analysis(puzzle_count, total_execution_time, total_length_of_the_searc
     print(f"Average number of no solution = {total_number_of_no_solution / puzzle_count}")
     print(f"\nTotal execution time = {total_execution_time} seconds")
     print(f"Average execution time = {total_execution_time / puzzle_count} seconds")
+    if total_cost is not None:
+        print(f"\nTotal cost = {total_cost}")
+        print(f"Average cost = {total_cost / puzzle_count}")
 
 
 if __name__ == "__main__":
